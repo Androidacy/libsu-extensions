@@ -4,3 +4,7 @@ build/
 local.properties
 .idea/
 .DS_Store
+
+# Keep gradle wrapper
+!gradle/wrapper/gradle-wrapper.jar
+!gradle/wrapper/gradle-wrapper.properties
