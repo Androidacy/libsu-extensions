@@ -32,17 +32,7 @@ class BusyboxInitializer : Shell.Initializer() {
     override fun onInit(context: Context, shell: Shell): Boolean {
         // Auto-detect busybox location based on root management solution
         val detectScript = """
-            exec $(
-                if [[ $(su -v | cut -d':' -f2 | tr "[:upper:]" "[:lower:]") == "magisksu" ]]; then
-                    echo "/data/adb/magisk/busybox"
-                elif [[ $(su -v | cut -d':' -f2 | tr "[:upper:]" "[:lower:]") == "kernelsu" ]]; then
-                    echo "/data/adb/ksu/bin/busybox"
-                elif [[ $(su -v | cut -d':' -f2 | tr "[:upper:]" "[:lower:]") == "apatch" ]]; then
-                    echo "/data/adb/ap/bin/busybox"
-                else
-                    which busybox
-                fi
-            ) ash -o standalone
+            BB=$(case $(su -v | cut -d: -f2 | tr A-Z a-z) in *magisk*) echo /data/adb/magisk/busybox;; *kernelsu*) echo /data/adb/ksu/bin/busybox;; *apatch*) echo /data/adb/ap/bin/busybox;; *) which busybox;; esac); echo "Detected: ${'$'}BB" >&2; exec "${'$'}BB" ash -o standalone
         """.trimIndent()
 
         val result = shell.newJob()
